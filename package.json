@@ -1,0 +1,18 @@
+{
+  "name": "file-counter",
+  "version": "1.0.0",
+  "description": "Counts files in a directory",
+  "main": "app.js",
+  "scripts": {
+    "tsc": "tsc",
+    "tsc-watcher": "tsc -w",
+    "start": "node build/app.js"
+  },
+  "dependencies": {
+    "tsconfig-paths": "^4.1.2",
+    "date-holidays": "3.19.0"
+  },
+  "devDependencies": {
+    "ts-node": "10.9.1"
+  }
+}
