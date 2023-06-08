@@ -9,7 +9,7 @@ async function main() {
     const profile = new ConsumptionProfile();
     profile.loadProfiles("my_profile");
     const feedInData = new FeedInData();
-    feedInData.loadFeedInData("830-Watt_35-Degrees.csv");
+    feedInData.loadFeedInData("600-Watt_35-Degrees.csv");
 
     // Variables needed by year-iteration
     const start = new Date('2023-01-01T00:00:00.000Z');
