@@ -5,10 +5,14 @@ import Holidays from 'date-holidays';
 export class ConsumptionProfile {
     private h0Profile: Map<TimeOfYear, TTimeOfYear>;
     private holidays;
+    private readonly seasonMonthFrom?: number;
+    private readonly seasonMonthTo?: number;
 
-    constructor() {
+    constructor(seasonMonthFromZeroBased?: number, seasonMonthToZeroBased?: number) {
         this.h0Profile = new Map();
         this.holidays = new Holidays("DE");
+        this.seasonMonthFrom = seasonMonthFromZeroBased;
+        this.seasonMonthTo = seasonMonthToZeroBased;
     }
 
     loadProfiles(profileFolder: string) {
@@ -26,6 +30,15 @@ export class ConsumptionProfile {
     }
 
     getConsumption(date: Date) : number {
+
+        if (this.seasonMonthFrom && date.getMonth() < this.seasonMonthFrom) {
+            return 0;
+        }
+
+        if (this.seasonMonthTo && date.getMonth() > this.seasonMonthTo) {
+            return 0;
+        }
+
         const march21st = new Date(date.getFullYear(), 2, 21);
         const may15th = new Date(date.getFullYear(), 4, 15);
         const september15th = new Date(date.getFullYear(), 8, 15);

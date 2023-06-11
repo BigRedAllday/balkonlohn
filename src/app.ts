@@ -1,15 +1,17 @@
 import {ConsumptionProfile} from "./consumptionProfile";
 import {FeedInData} from "./feedInData";
+import {Storage} from "./storage";
 
 async function main() {
     // Feed in is limited for example by inverter power
     const feedInLimit = 600;
 
     // Load Profiles
-    const profile = new ConsumptionProfile();
-    profile.loadProfiles("my_profile");
+    const profile = new ConsumptionProfile(2, 9);
+    profile.loadProfiles("garden_house");
     const feedInData = new FeedInData();
-    feedInData.loadFeedInData("830-Watt_35-Degrees.csv");
+    feedInData.loadFeedInData("300-Watt_35-Degrees.csv");
+    const storage = new Storage(true, 1000);
 
     // Variables needed by year-iteration
     const start = new Date('2023-01-01T00:00:00.000Z');
@@ -28,6 +30,12 @@ async function main() {
         totalConsumption = totalConsumption + consumption;
         totalProduction = totalProduction + feedIn;
         selfConsumption = selfConsumption + Math.min(consumption, feedIn);
+        if (feedIn > consumption) {
+            storage.put(feedIn - consumption, 0.25);
+        } else {
+            storage.get(consumption - feedIn, 0.25);
+        }
+
     }
 
     console.log(`Jahresverbrauch laut Profil (kWh): ${totalConsumption / 1000}`);
