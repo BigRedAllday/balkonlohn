@@ -11,7 +11,7 @@ async function main() {
     profile.loadProfiles("garden_house");
     const feedInData = new FeedInData();
     feedInData.loadFeedInData("300-Watt_35-Degrees.csv");
-    const storage = new Storage(true, 1000);
+    const storage = new Storage(true, 1500);
 
     // Variables needed by year-iteration
     const start = new Date('2023-01-01T00:00:00.000Z');
@@ -41,6 +41,9 @@ async function main() {
     console.log(`Jahresverbrauch laut Profil (kWh): ${totalConsumption / 1000}`);
     console.log(`Produktion gesamt (kWh): ${totalProduction / 1000}`);
     console.log(`Eigenverbrauch (kWh): ${selfConsumption / 1000}`);
+    if (storage.getIsActivated()) {
+        console.log(`Geringster Speicherstand (Wh): ${storage.getMinimumCharge()}`);
+    }
 }
 
 
