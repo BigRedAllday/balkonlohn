@@ -7,7 +7,7 @@ async function main() {
 
     // Load Profiles
     const profile = new ConsumptionProfile();
-    profile.loadProfiles("my_profile_bad");
+    profile.loadProfiles("my_profile_good");
     const feedInData = new FeedInData();
     feedInData.loadFeedInData("600-Watt_35-Degrees.csv");
 
