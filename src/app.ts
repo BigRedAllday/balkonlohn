@@ -4,10 +4,11 @@ import {FeedInData} from "./feedInData";
 async function main() {
     // Feed in is limited for example by inverter power
     const feedInLimit = 600;
+    const baseLoadIncrease = 0;
 
     // Load Profiles
     const profile = new ConsumptionProfile();
-    profile.loadProfiles("my_profile_good");
+    profile.loadProfiles("my_profile");
     const feedInData = new FeedInData();
     feedInData.loadFeedInData("600-Watt_35-Degrees.csv");
 
@@ -23,7 +24,7 @@ async function main() {
 
     for (let current = start.getTime(); current <= end.getTime(); current += quarterHour) {
         const currentTime = new Date(current);
-        const consumption = profile.getConsumption(currentTime);
+        const consumption = profile.getConsumption(currentTime) + baseLoadIncrease;
         const feedIn = Math.min(feedInData.getFeedIn(currentTime), feedInLimit);
         totalConsumption = totalConsumption + consumption;
         totalProduction = totalProduction + feedIn;
