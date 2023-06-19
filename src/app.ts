@@ -4,7 +4,7 @@ import {FeedInData} from "./feedInData";
 async function main() {
     // Feed in is limited for example by inverter power
     const feedInLimit = 600;
-    const baseLoadIncrease = 250;
+    const baseLoadIncrease = 0;
 
     // Load Profiles
     const profile = new ConsumptionProfile();
