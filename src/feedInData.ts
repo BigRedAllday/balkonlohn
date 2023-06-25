@@ -9,8 +9,8 @@ export class FeedInData {
         this.feedInData = new Map();
     }
 
-    loadFeedInData(filename: string) : TFeedInMetadata {
-        const fileContent = fs.readFileSync(`./feedin/${filename}`, "utf8");
+    loadFeedInData(path: string) : TFeedInMetadata {
+        const fileContent = fs.readFileSync(path, "utf8");
         let slope: number | undefined;
         let azimuth: number | undefined;
         let peakPowerKw: number | undefined;
