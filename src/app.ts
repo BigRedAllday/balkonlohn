@@ -2,7 +2,7 @@ import {Simulator} from "./simulator";
 
 async function main() {
     const simulator = new Simulator();
-    await simulator.run("600-Watt_35-Degrees.csv");
+    await simulator.run("angles/800");
 }
 
 

@@ -33,17 +33,17 @@ export class FeedInData {
             } else if (line.startsWith("Slope")) {
                 // e.g. Slope: 90 deg.
                 const match = line.match(/Slope: (\d+) deg\./);
-                slope = match ? parseInt( match[1]) : undefined;;
+                slope = match ? parseFloat( match[1]) : undefined;;
             } else if (line.startsWith("Azimuth")) {
                 // eg. Azimuth: 0 deg.
                 const match = line.match(/Azimuth: (\d+) deg\./);
-                azimuth = match ? parseInt( match[1]) : undefined;;
+                azimuth = match ? parseFloat( match[1]) : undefined;;
             } else if (line.startsWith("Nominal power of the PV system")) {
                 // e.g. Nominal power of the PV system (c-Si) (kWp):	0.3
-                peakPowerKw = parseInt(line.split(":")[1]!.trim());
+                peakPowerKw = parseFloat(line.split(":")[1]!.trim());
             } else if (line.startsWith("System losses")) {
                 // e.g. System losses (%):	8.0
-                systemLossPercent = parseInt( line.split(":")[1]!.trim());
+                systemLossPercent = parseFloat( line.split(":")[1]!.trim());
             }
         }
 

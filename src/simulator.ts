@@ -47,7 +47,14 @@ export class Simulator {
                 console.log(`Produktion gesamt (kWh): ${totalProduction / 1000}`);
                 console.log(`Eigenverbrauch (kWh): ${selfConsumption / 1000}`);
             } else {
-                throw Error("Not implemented yet");
+                const fileName = `Azimuth-${feedInMetaData.azimuth}.csv`;
+                const existed = fs.existsSync(fileName);
+                const fd = fs.openSync(fileName, 'w');
+                if (!existed) {
+                    fs.writeSync(fd, 'slope;own;sum\r\n');
+                }
+                fs.writeSync(fd, `${feedInMetaData.slope};${(selfConsumption / 1000).toFixed(3)};${(totalProduction / 1000).toFixed(3)}\r\n`);
+                fs.closeSync(fd);
             }
         }
     }
