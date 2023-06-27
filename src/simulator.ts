@@ -49,12 +49,11 @@ export class Simulator {
             } else {
                 const fileName = `Azimuth-${feedInMetaData.azimuth}.csv`;
                 const existed = fs.existsSync(fileName);
-                const fd = fs.openSync(fileName, 'w');
                 if (!existed) {
-                    fs.writeSync(fd, 'slope;own;sum\r\n');
+                    fs.writeFileSync(fileName, 'slope;own;sum\r\n');
                 }
-                fs.writeSync(fd, `${feedInMetaData.slope};${(selfConsumption / 1000).toFixed(3)};${(totalProduction / 1000).toFixed(3)}\r\n`);
-                fs.closeSync(fd);
+                fs.appendFileSync(fileName, `${feedInMetaData.slope};${(selfConsumption / 1000).toFixed(3)};${(totalProduction / 1000).toFixed(3)}\r\n`);
+                // console.log(`Added values to ${existed ? "existing" : "new"} file ${fileName}`);
             }
         }
     }

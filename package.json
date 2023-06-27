@@ -1,7 +1,7 @@
 {
-  "name": "file-counter",
+  "name": "power-matching",
   "version": "1.0.0",
-  "description": "Counts files in a directory",
+  "description": "Matches solar feed in with consumption",
   "main": "app.js",
   "scripts": {
     "tsc": "tsc",
