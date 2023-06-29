@@ -36,7 +36,7 @@ export class FeedInData {
                 slope = match ? parseFloat( match[1]) : undefined;;
             } else if (line.startsWith("Azimuth")) {
                 // eg. Azimuth: 0 deg.
-                const match = line.match(/Azimuth: (\d+) deg\./);
+                const match = line.match(/Azimuth: (-?\d+) deg\./);
                 azimuth = match ? parseFloat( match[1]) : undefined;;
             } else if (line.startsWith("Nominal power of the PV system")) {
                 // e.g. Nominal power of the PV system (c-Si) (kWp):	0.3

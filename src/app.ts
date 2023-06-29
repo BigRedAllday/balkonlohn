@@ -2,7 +2,7 @@ import {Simulator} from "./simulator";
 
 async function main() {
     const simulator = new Simulator();
-    await simulator.run("angles/800");
+    await simulator.run("angles/300");
 }
 
 
