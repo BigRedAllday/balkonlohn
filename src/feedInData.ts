@@ -1,4 +1,5 @@
 import fs from "fs";
+import {TFeedInMetadata} from "./types";
 
 export class FeedInData {
 
@@ -8,9 +9,12 @@ export class FeedInData {
         this.feedInData = new Map();
     }
 
-    loadFeedInData(filename: string) {
-        const fileContent = fs.readFileSync(`./feedin/${filename}`, "utf8");
-        let debug = 0;
+    loadFeedInData(path: string) : TFeedInMetadata {
+        const fileContent = fs.readFileSync(path, "utf8");
+        let slope: number | undefined;
+        let azimuth: number | undefined;
+        let peakPowerKw: number | undefined;
+        let systemLossPercent: number | undefined;
 
         for (const line of fileContent.split("\n")) {
             if (line.startsWith("20")) {
@@ -21,13 +25,37 @@ export class FeedInData {
                 const day = Number.parseInt(timeParts[0].substring(6, 8));
 
                 const wattHours = Number.parseFloat(values[1]);
-                debug = debug + wattHours;
                 const wattQuarterHour = wattHours / 4;
                 this.feedInData.set(`${month}.${day}.${hour}.0`, wattQuarterHour);
                 this.feedInData.set(`${month}.${day}.${hour}.15`, wattQuarterHour);
                 this.feedInData.set(`${month}.${day}.${hour}.30`, wattQuarterHour);
                 this.feedInData.set(`${month}.${day}.${hour}.45`, wattQuarterHour);
+            } else if (line.startsWith("Slope")) {
+                // e.g. Slope: 90 deg.
+                const match = line.match(/Slope: (\d+) deg\./);
+                slope = match ? parseFloat( match[1]) : undefined;;
+            } else if (line.startsWith("Azimuth")) {
+                // eg. Azimuth: 0 deg.
+                const match = line.match(/Azimuth: (-?\d+) deg\./);
+                azimuth = match ? parseFloat( match[1]) : undefined;;
+            } else if (line.startsWith("Nominal power of the PV system")) {
+                // e.g. Nominal power of the PV system (c-Si) (kWp):	0.3
+                peakPowerKw = parseFloat(line.split(":")[1]!.trim());
+            } else if (line.startsWith("System losses")) {
+                // e.g. System losses (%):	8.0
+                systemLossPercent = parseFloat( line.split(":")[1]!.trim());
             }
+        }
+
+        if (slope !== undefined && azimuth !== undefined && peakPowerKw !== undefined && systemLossPercent !== undefined) {
+            return {
+                azimuth,
+                slope,
+                systemLossPercent,
+                peakPowerKw
+            }
+        } else {
+            throw Error("Unable to parse metadata");
         }
     }
 
