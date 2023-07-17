@@ -4,14 +4,14 @@ import fs from "fs";
 import path from 'path';
 
 export class Simulator {
-    public async run(fileOrDirectory: string) {
+    public async run(fileOrDirectory: string, profileName: string) {
         // Feed in is limited for example by inverter power
         const feedInLimit = 600;
         const baseLoadIncrease = 0;
 
         // Load Profiles
         const profile = new ConsumptionProfile();
-        profile.loadProfiles("my_profile");
+        profile.loadProfiles(profileName);
 
         const fullPath = `./feedin/${fileOrDirectory}`;
         const isDirectory = await this.isDirectory(fullPath);
