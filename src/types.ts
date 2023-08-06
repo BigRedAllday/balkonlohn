@@ -20,3 +20,10 @@ export type TTimeOfYear = {
     timeOfYear: TimeOfYear;
     days: Map<Day, TValue[]>;
 };
+
+export type TFeedInMetadata = {
+    azimuth: number,
+    slope: number,
+    peakPowerKw: number,
+    systemLossPercent: number
+}
