@@ -1,14 +1,19 @@
 import * as fs from "fs";
 import {Day, TimeOfYear, TTimeOfYear} from "./types";
 import Holidays from 'date-holidays';
+import { addMinutes } from 'date-fns'
 
 export class ConsumptionProfile {
     private h0Profile: Map<TimeOfYear, TTimeOfYear>;
     private holidays;
+    private readonly seasonMonthFrom?: number;
+    private readonly seasonMonthTo?: number;
 
-    constructor() {
+    constructor(seasonMonthFromZeroBased?: number, seasonMonthToZeroBased?: number) {
         this.h0Profile = new Map();
         this.holidays = new Holidays("DE");
+        this.seasonMonthFrom = seasonMonthFromZeroBased;
+        this.seasonMonthTo = seasonMonthToZeroBased;
     }
 
     loadProfiles(profileFolder: string) {
@@ -25,21 +30,32 @@ export class ConsumptionProfile {
         this.h0Profile.set(TimeOfYear.SPRING_AUTUMN, springAutumnProfile);
     }
 
-    getConsumption(date: Date) : number {
-        const march21st = new Date(date.getFullYear(), 2, 21);
-        const may15th = new Date(date.getFullYear(), 4, 15);
-        const september15th = new Date(date.getFullYear(), 8, 15);
-        const november1st = new Date(date.getFullYear(), 10, 1);
+    getConsumption(leftAlignedDate: Date) : number {
+
+        const rightAlignedDate = addMinutes(leftAlignedDate, 15);
+
+        if (this.seasonMonthFrom && rightAlignedDate.getMonth() < this.seasonMonthFrom) {
+            return 0;
+        }
+
+        if (this.seasonMonthTo && rightAlignedDate.getMonth() > this.seasonMonthTo) {
+            return 0;
+        }
+
+        const march21st = new Date(rightAlignedDate.getFullYear(), 2, 21);
+        const may15th = new Date(rightAlignedDate.getFullYear(), 4, 15);
+        const september15th = new Date(rightAlignedDate.getFullYear(), 8, 15);
+        const november1st = new Date(rightAlignedDate.getFullYear(), 10, 1);
 
         // get time of year
         let timeOfYear: TimeOfYear;
-        if (date.getTime() < march21st.getTime()) {
+        if (rightAlignedDate.getTime() < march21st.getTime()) {
             timeOfYear = TimeOfYear.WINTER;
-        } else if (date.getTime() < may15th.getTime()) {
+        } else if (rightAlignedDate.getTime() < may15th.getTime()) {
             timeOfYear = TimeOfYear.SPRING_AUTUMN;
-        } else if (date.getTime() < september15th.getTime()) {
+        } else if (rightAlignedDate.getTime() < september15th.getTime()) {
             timeOfYear = TimeOfYear.SUMMER;
-        } else if (date.getTime() < november1st.getTime()) {
+        } else if (rightAlignedDate.getTime() < november1st.getTime()) {
             timeOfYear = TimeOfYear.SPRING_AUTUMN;
         } else {
             timeOfYear = TimeOfYear.WINTER;
@@ -47,16 +63,17 @@ export class ConsumptionProfile {
 
         // get day
         let day: Day;
-        if (this.holidays.isHoliday(date) || date.getDay() === 0) {
+        if (this.holidays.isHoliday(rightAlignedDate) || rightAlignedDate.getDay() === 0) {
             day = Day.SUNDAY;
-        } else if ( date.getDay() === 6) {
+        } else if ( rightAlignedDate.getDay() === 6) {
             day = Day.SATURDAY;
         } else {
             day = Day.WORKING_DAY;
         }
 
         const valuesOfDay = this.h0Profile.get(timeOfYear)!.days.get(day);
-        const value = valuesOfDay!.find(v => v.hour === date.getHours() && v.minute === date.getMinutes());
+        const value = valuesOfDay!.find(v => v.hour === rightAlignedDate.getHours()
+            && v.minute === rightAlignedDate.getMinutes());
 
         return value!.value / 4;
     }

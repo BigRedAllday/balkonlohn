@@ -3,8 +3,13 @@
 ## Requirements
 Npm/node installed
 
-## Build and run
+## Build
 
 * npm install
-* npm run tsc
+* npm run ts
+
+## Run (without storage)
 * npm start
+
+## Run (with storage)
+* npm start -- 1000   (storage with 1000 Wh = 1kWh)
