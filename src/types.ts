@@ -27,3 +27,19 @@ export type TFeedInMetadata = {
     peakPowerKw: number,
     systemLossPercent: number
 }
+
+export type TStorageProcessResult = {
+    newFeedIn: number,
+    setPointWh: number,
+    oldBatteryCharge: number,
+    newBatteryCharge: number
+}
+
+export enum SetPointType {
+    CONSUMPTION_PROFILE,
+    BASE_LOAD,
+    BASE_LOAD_PLUS_PRIME_TIME_150W,
+    CONTINUOUS_50W,
+    CONTINUOUS_100W,
+    CONTINUOUS_200W
+}

@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "tsconfig-paths": "^4.1.2",
-    "date-holidays": "3.19.0"
+    "date-holidays": "3.19.0",
+    "date-fns": "2.30.0"
   },
   "devDependencies": {
     "ts-node": "10.9.1"
