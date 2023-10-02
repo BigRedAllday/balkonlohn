@@ -7,7 +7,7 @@ async function main() {
     const storageSize = process.argv[2] ? Number.parseInt(process.argv[2]) : 0;
     console.log(`Storage size: ${storageSize} Wh`);
     simulator.addStorage(storageSize, SetPointType.CONSUMPTION_PROFILE);
-    await simulator.run("shadow_summer/1-one_degree.csv", "my_profile", true);
+    await simulator.run("600-Watt_35-Degrees.csv", "my_profile", false);
 }
 
 //Invoke the main function
