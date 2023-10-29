@@ -9,10 +9,12 @@ export class Simulator {
 
     private readonly feedInLimit: number;
     private readonly baseLoadIncrease: number;
+    private readonly profileFactor: number;
 
-    constructor(feedInLimit: number, baseLoadIncrease: number) {
+    constructor(feedInLimit: number, baseLoadIncrease: number, profileFactor: number) {
         this.feedInLimit = feedInLimit;
         this.baseLoadIncrease = baseLoadIncrease;
+        this.profileFactor = profileFactor;
     }
 
     private storage: Storage | undefined;
@@ -55,7 +57,7 @@ export class Simulator {
 
             for (let current = start.getTime(); current <= end.getTime(); current += quarterHour) {
                 const currentTime = new Date(current);
-                const consumption = profile.getConsumption(currentTime) + this.baseLoadIncrease / 4;
+                const consumption = (profile.getConsumption(currentTime) + this.baseLoadIncrease / 4) * this.profileFactor;
 
                 const feedInFromSolar = feedInData.getFeedIn(currentTime);
                 const storageProcessResult = this.storage?.process(currentTime, feedInFromSolar, consumption)
