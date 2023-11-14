@@ -110,7 +110,7 @@ export class Simulator {
         return new Promise((resolve, reject) => {
             fs.lstat(path, (err, stats) => {
                 if (err) {
-                    reject("Error reading file");
+                    reject("Error reading file -> " + err.message);
                 } else {
                     if (stats.isFile()) {
                         resolve(false);
