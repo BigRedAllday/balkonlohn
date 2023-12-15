@@ -19,8 +19,8 @@ export class Simulator {
 
     private storage: Storage | undefined;
 
-    public addStorage(storageSizeWh: number, setPointType: SetPointType) {
-        this.storage = new Storage(storageSizeWh, setPointType, this.feedInLimit, this.baseLoadIncrease);
+    public addStorage(storageSizeWh: number, setPointType: SetPointType, baseLoad: number) {
+        this.storage = new Storage(storageSizeWh, setPointType, this.feedInLimit, baseLoad, 90);
     }
 
     public async run(fileOrDirectory: string, profileName: string, isLoggingEnabled: boolean) {
