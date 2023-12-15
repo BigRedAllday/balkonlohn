@@ -35,7 +35,7 @@ export class Simulator {
 
         for (const file of allFiles) {
             const feedInData = new FeedInData();
-            const feedInMetaData = feedInData.loadFeedInData(file);
+            const feedInMetaData = feedInData.loadFeedInData(file, this.feedInLimit);
             console.log(`Simulating with ${JSON.stringify(feedInMetaData)}`);
 
             // Variables needed by year-iteration
@@ -61,9 +61,8 @@ export class Simulator {
 
                 const feedInFromSolar = feedInData.getFeedIn(currentTime);
                 const storageProcessResult = this.storage?.process(currentTime, feedInFromSolar, consumption)
-                const feedInAfterStorage = storageProcessResult ? storageProcessResult.newFeedIn : feedInFromSolar;
+                const feedIn = storageProcessResult ? storageProcessResult.newFeedIn : feedInFromSolar;
 
-                const feedIn = Math.min(feedInAfterStorage, this.feedInLimit);
                 const selfConsumption = Math.min(consumption, feedIn);
 
                 totalConsumption = totalConsumption + consumption;
@@ -74,7 +73,7 @@ export class Simulator {
                     const line = `${currentTime};`.concat(
                         `${consumption.toFixed(2)};`,
                         `${feedInFromSolar.toFixed(2)};`,
-                        `${feedInAfterStorage.toFixed(2)};`,
+                        `${feedIn.toFixed(2)};`,
                         `${selfConsumption.toFixed(2)};`,
                         `${storageProcessResult ? storageProcessResult.setPointWh : "-"};`,
                         `${storageProcessResult ? storageProcessResult.oldBatteryCharge.toFixed(2) : "-"};`,
