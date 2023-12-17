@@ -9,7 +9,7 @@ export class FeedInData {
         this.feedInData = new Map();
     }
 
-    loadFeedInData(path: string) : TFeedInMetadata {
+    loadFeedInData(path: string, feedInLimit: number) : TFeedInMetadata {
         const fileContent = fs.readFileSync(path, "utf8");
         let slope: number | undefined;
         let azimuth: number | undefined;
@@ -24,8 +24,9 @@ export class FeedInData {
                 const month = Number.parseInt(timeParts[0].substring(4, 6));
                 const day = Number.parseInt(timeParts[0].substring(6, 8));
 
-                const wattHours = Number.parseFloat(values[1]);
-                const wattQuarterHour = wattHours / 4;
+                const expectedWattInThisHour = Number.parseFloat(values[1]);
+
+                const wattQuarterHour = Math.min(expectedWattInThisHour, feedInLimit) / 4;
                 this.feedInData.set(`${month}.${day}.${hour}.0`, wattQuarterHour);
                 this.feedInData.set(`${month}.${day}.${hour}.15`, wattQuarterHour);
                 this.feedInData.set(`${month}.${day}.${hour}.30`, wattQuarterHour);

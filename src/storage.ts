@@ -13,13 +13,13 @@ export class Storage {
     private readonly setPoint: SetPoint;
     private calcMinimumCharge: boolean;
 
-    constructor(sizeWh: number, setPointType: SetPointType, feedInLimit: number, baseLoadIncrease: number) {
+    constructor(sizeWh: number, setPointType: SetPointType, feedInLimit: number, baseLoad: number, powerRefrigerator: number) {
         this.currentCharge = 0;
         this.currentChargeOld = 0;
         this.sizeWh = sizeWh;
         this.maximumCharge = 0;
         this.calcMinimumCharge = false;
-        this.setPoint = new SetPoint(setPointType, feedInLimit, baseLoadIncrease);
+        this.setPoint = new SetPoint(setPointType, feedInLimit, baseLoad, powerRefrigerator);
     }
 
     process(date: Date, feedInWh: number, consumptionWh: number) : TStorageProcessResult {

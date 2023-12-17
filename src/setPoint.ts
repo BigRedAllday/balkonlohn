@@ -4,15 +4,14 @@ export class SetPoint {
 
     private readonly setPointType: SetPointType;
     private readonly feedInLimit: number;
-    private readonly baseLoadIncrease: number;
+    private readonly baseLoad: number;
+    private readonly powerRefrigerator: number;  // power of refrigerator matching to profile
 
-    private readonly BASE_LOAD = 26;
-    private readonly REFRIGERATOR = 90;
-
-    constructor(setPointType: SetPointType, feedInLimit: number, baseLoadIncrease: number) {
+    constructor(setPointType: SetPointType, feedInLimit: number, baseLoad: number, powerRefrigerator: number) {
         this.setPointType = setPointType;
         this.feedInLimit = feedInLimit;
-        this.baseLoadIncrease = baseLoadIncrease;
+        this.baseLoad = baseLoad;
+        this.powerRefrigerator = powerRefrigerator;
     }
 
     public getSetPointType() : SetPointType {
@@ -74,9 +73,11 @@ export class SetPoint {
             currentTime.getHours() === 22 && currentTime.getMinutes() === 0 ||
             currentTime.getHours() === 22 && currentTime.getMinutes() === 45 ||
             currentTime.getHours() === 23 && currentTime.getMinutes() === 30) {
-            return this.BASE_LOAD + this.REFRIGERATOR + this.baseLoadIncrease;
+            // IMPORTANT:
+            // Consumption profile needs to have same hours on which refrigerator goes on!!!
+            return this.baseLoad + this.powerRefrigerator;
         } else {
-            return this.BASE_LOAD + this.baseLoadIncrease;
+            return this.baseLoad;
         }
     }
 }
