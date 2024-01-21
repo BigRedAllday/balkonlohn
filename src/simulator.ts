@@ -9,16 +9,18 @@ export class Simulator {
 
     private readonly feedInLimit: number;
     private readonly baseLoadIncrease: number;
+    private readonly profileFactor: number;
 
-    constructor(feedInLimit: number, baseLoadIncrease: number) {
+    constructor(feedInLimit: number, baseLoadIncrease: number, profileFactor: number) {
         this.feedInLimit = feedInLimit;
         this.baseLoadIncrease = baseLoadIncrease;
+        this.profileFactor = profileFactor;
     }
 
     private storage: Storage | undefined;
 
-    public addStorage(storageSizeWh: number, setPointType: SetPointType) {
-        this.storage = new Storage(storageSizeWh, setPointType, this.feedInLimit, this.baseLoadIncrease);
+    public addStorage(storageSizeWh: number, setPointType: SetPointType, baseLoad: number) {
+        this.storage = new Storage(storageSizeWh, setPointType, this.feedInLimit, baseLoad, 90);
     }
 
     public async run(fileOrDirectory: string, profileName: string, isLoggingEnabled: boolean) {
@@ -33,7 +35,7 @@ export class Simulator {
 
         for (const file of allFiles) {
             const feedInData = new FeedInData();
-            const feedInMetaData = feedInData.loadFeedInData(file);
+            const feedInMetaData = feedInData.loadFeedInData(file, this.feedInLimit);
             console.log(`Simulating with ${JSON.stringify(feedInMetaData)}`);
 
             // Variables needed by year-iteration
@@ -55,13 +57,12 @@ export class Simulator {
 
             for (let current = start.getTime(); current <= end.getTime(); current += quarterHour) {
                 const currentTime = new Date(current);
-                const consumption = profile.getConsumption(currentTime) + this.baseLoadIncrease / 4;
+                const consumption = (profile.getConsumption(currentTime) + this.baseLoadIncrease / 4) * this.profileFactor;
 
                 const feedInFromSolar = feedInData.getFeedIn(currentTime);
                 const storageProcessResult = this.storage?.process(currentTime, feedInFromSolar, consumption)
-                const feedInAfterStorage = storageProcessResult ? storageProcessResult.newFeedIn : feedInFromSolar;
+                const feedIn = storageProcessResult ? storageProcessResult.newFeedIn : feedInFromSolar;
 
-                const feedIn = Math.min(feedInAfterStorage, this.feedInLimit);
                 const selfConsumption = Math.min(consumption, feedIn);
 
                 totalConsumption = totalConsumption + consumption;
@@ -72,7 +73,7 @@ export class Simulator {
                     const line = `${currentTime};`.concat(
                         `${consumption.toFixed(2)};`,
                         `${feedInFromSolar.toFixed(2)};`,
-                        `${feedInAfterStorage.toFixed(2)};`,
+                        `${feedIn.toFixed(2)};`,
                         `${selfConsumption.toFixed(2)};`,
                         `${storageProcessResult ? storageProcessResult.setPointWh : "-"};`,
                         `${storageProcessResult ? storageProcessResult.oldBatteryCharge.toFixed(2) : "-"};`,
@@ -108,7 +109,7 @@ export class Simulator {
         return new Promise((resolve, reject) => {
             fs.lstat(path, (err, stats) => {
                 if (err) {
-                    reject("Error reading file");
+                    reject("Error reading file -> " + err.message);
                 } else {
                     if (stats.isFile()) {
                         resolve(false);
